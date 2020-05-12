@@ -5,6 +5,7 @@ import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
 import { runSeeder } from '../typeorm-seeding'
 import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
+import { panic } from '../utils/error.util';
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -101,10 +102,4 @@ export class SeedCommand implements yargs.CommandModule {
     log('👍 ', chalk.gray.underline(`Finished Seeding`))
     process.exit(0)
   }
-}
-
-function panic(spinner: ora.Ora, error: Error, message: string) {
-  spinner.fail(message)
-  console.error(error)
-  process.exit(1)
 }
