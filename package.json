@@ -27,7 +27,8 @@
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -c sample",
     "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log -c sample",
     "seed:run": "ts-node ./dist/cli.js seed -c sample",
-    "seed:config": "ts-node ./dist/cli.js config -c sample"
+    "seed:config": "ts-node ./dist/cli.js config -c sample",
+    "seed:generate": "ts-node ./src/cli.ts seed:generate -c memory -f test"
   },
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",

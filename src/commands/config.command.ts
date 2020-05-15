@@ -2,28 +2,14 @@ import * as yargs from 'yargs'
 import * as chalk from 'chalk'
 import { printError } from '../utils/log.util'
 import { configureConnection, getConnectionOptions } from '../connection'
+import { utilsHelper } from '../utils/args.helper.util'
 
 export class ConfigCommand implements yargs.CommandModule {
   command = 'config'
   describe = 'Show the TypeORM config'
 
   builder(args: yargs.Argv) {
-    return args
-      .option('n', {
-        alias: 'configName',
-        default: '',
-        describe: 'Name of the typeorm config file (json or js).',
-      })
-      .option('c', {
-        alias: 'connection',
-        default: '',
-        describe: 'Name of the typeorm connection',
-      })
-      .option('r', {
-        alias: 'root',
-        default: process.cwd(),
-        describe: 'Path to your typeorm config file',
-      })
+    return utilsHelper(args)
   }
 
   async handler(args: yargs.Arguments) {

@@ -6,6 +6,10 @@ module.exports = [
         entities: ['sample/entities/**/*{.ts,.js}'],
         factories: ['sample/factories/**/*{.ts,.js}'],
         seeds: ['sample/seeds/**/*{.ts,.js}'],
+        "cli": {
+            "seedsDir": "./sample/seeding",
+            "migrationsDir": "./sample/migration"
+        }
     },
     {
         name: 'memory',
@@ -14,5 +18,9 @@ module.exports = [
         entities: ['sample/entities/**/*{.ts,.js}'],
         factories: ['sample/factories/**/*{.ts,.js}'],
         seeds: ['sample/seeds/**/*{.ts,.js}'],
+        "cli": {
+            "seedsDir": "./sample/seeding",
+            "migrationsDir": "./sample/migration"
+        }
     }
 ]

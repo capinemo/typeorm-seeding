@@ -5,33 +5,17 @@ import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
 import { runSeeder } from '../typeorm-seeding'
 import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
-import { panic } from '../utils/error.util';
+import { utilsHelper } from '../utils/args.helper.util'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
   describe = 'Runs the seeds'
 
   builder(args: yargs.Argv) {
-    return args
-      .option('n', {
-        alias: 'configName',
-        default: '',
-        describe: 'Name of the typeorm config file (json or js).',
-      })
-      .option('c', {
-        alias: 'connection',
-        default: '',
-        describe: 'Name of the typeorm connection',
-      })
-      .option('r', {
-        alias: 'root',
-        default: process.cwd(),
-        describe: 'Path to your typeorm config file',
-      })
-      .option('seed', {
-        alias: 's',
-        describe: 'Specific seed class to run.',
-      })
+    return utilsHelper(args).option('seed', {
+      alias: 's',
+      describe: 'Specific seed class to run.',
+    })
   }
 
   async handler(args: yargs.Arguments) {
@@ -103,3 +87,10 @@ export class SeedCommand implements yargs.CommandModule {
     process.exit(0)
   }
 }
+
+export const panic = (spinner: ora.Ora, error: Error, message: string) => {
+  spinner.fail(message)
+  console.error(error)
+  process.exit(1)
+}
+
