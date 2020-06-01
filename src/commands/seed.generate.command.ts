@@ -46,7 +46,7 @@ export class SeedGenerateCommand implements yargs.CommandModule {
         connection: args.connection as string,
       })
       const option = await getConnectionOptions()
-      seedsDirs = option.cli.seedsDir
+      seedsDirs = option.cli.migrationsDir
     } catch (error) {
       printError('Could not find the orm config file', error)
       process.exit(1)
@@ -58,8 +58,8 @@ export class SeedGenerateCommand implements yargs.CommandModule {
     }
 
     const timestamp = Date.now();
-    const generatedName = `${timestamp}-${args.fileName as string}.ts`
-    const fullPath = path.join(__dirname, '../..', seedsDirs).normalize();
+    const generatedName = `${timestamp}-seed-${args.fileName as string}.ts`
+    const fullPath = path.resolve(seedsDirs);
     const fileName = path.join(fullPath, generatedName).normalize();
     const fileContent = SeedGenerateCommand.generateSeedFile(args.fileName as string, timestamp.toString());
 
