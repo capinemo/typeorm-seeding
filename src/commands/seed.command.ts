@@ -93,4 +93,3 @@ export const panic = (spinner: ora.Ora, error: Error, message: string) => {
   console.error(error)
   process.exit(1)
 }
-
