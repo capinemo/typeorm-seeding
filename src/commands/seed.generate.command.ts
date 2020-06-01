@@ -1,7 +1,7 @@
 import * as yargs from 'yargs'
 import * as chalk from 'chalk'
-import * as path from 'path';
-import * as fs from 'fs';
+import * as path from 'path'
+import * as fs from 'fs'
 import { configureConnection, getConnectionOptions } from '../connection'
 import { printError } from '../utils/log.util'
 import { utilsHelper } from '../utils/args.helper.util'
@@ -27,7 +27,7 @@ export class SeedGenerateCommand implements yargs.CommandModule {
   }
 
   /**
-   * Command execution hadling
+   * Generator handler execution
    *
    * @public
    * @async
@@ -57,16 +57,32 @@ export class SeedGenerateCommand implements yargs.CommandModule {
       process.exit(1)
     }
 
-    const timestamp = Date.now();
+    if (!seedsDirs) {
+      console.error('Not found seedsDir parameter in ormconfig')
+      process.exit(1)
+    }
+
+    const timestamp = Date.now()
     const generatedName = `${timestamp}-${args.fileName as string}.ts`
-    const fullPath = path.join(__dirname, '../..', seedsDirs).normalize();
-    const fileName = path.join(fullPath, generatedName).normalize();
-    const fileContent = SeedGenerateCommand.generateSeedFile(args.fileName as string, timestamp.toString());
+    const fullPath = path.resolve(seedsDirs)
+    const fileName = path.join(fullPath, generatedName).normalize()
+    const fileContent = SeedGenerateCommand.generateSeedFile(args.fileName as string, timestamp.toString())
 
-    !fs.existsSync(fullPath) && fs.mkdirSync(fullPath, { recursive: true });
-    !fs.existsSync(fileName) && fs.writeFileSync(fileName, fileContent);
+    try {
+      !fs.existsSync(fullPath) && fs.mkdirSync(fullPath, { recursive: true })
+    } catch (error) {
+      console.error('Access denied to seeding directory', error)
+      process.exit(1)
+    }
 
-    console.log(chalk.green(`Seed file ${chalk.blue(fileName)} has been generated successfully.`));
+    try {
+      !fs.existsSync(fileName) && fs.writeFileSync(fileName, fileContent)
+    } catch (error) {
+      console.error('Can not generate seeding file', error)
+      process.exit(1)
+    }
+
+    console.log(chalk.green(`Seed file ${chalk.blue(fileName)} has been generated successfully.`))
     process.exit(0)
   }
 
@@ -79,13 +95,13 @@ export class SeedGenerateCommand implements yargs.CommandModule {
    * @param timestamp     Current timestamp
    * @returns             Seed file content
    */
-  protected static generateSeedFile (fileName: string, timestamp: string): string {
-    const validName = fileName.replace(/^([a-z])|^([A-Z])|[\s-_](\w)/g, function(match, p1, p2, p3, offset) {
-      if (offset === 0) return p1.toUpperCase();
-      if (p3) return p3.toUpperCase();
-      return p2.toLowerCase();
+  protected static generateSeedFile(fileName: string, timestamp: string): string {
+    const validName = fileName.replace(/^([a-z])|^([A-Z])|[\s-_](\w)/g, function (match, p1, p2, p3, offset) {
+      if (offset === 0) return p1.toUpperCase()
+      if (p3) return p3.toUpperCase()
+      return p2.toLowerCase()
     })
-    const migrationName = `Seed${timestamp}${validName}`;
+    const migrationName = `Seed${timestamp}${validName}`
 
     return `import { Connection } from 'typeorm';
 import { Seeder, Factory } from 'typeorm-seeding';
@@ -95,6 +111,6 @@ export class ${migrationName} implements Seeder {
 
     }
 }
-`;
+`
   }
 }
